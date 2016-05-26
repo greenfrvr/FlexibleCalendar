@@ -16,10 +16,10 @@ import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 
 import com.antonyt.infiniteviewpager.InfinitePagerAdapter;
+import com.p_v.flexiblecalendar.entity.Event;
 import com.p_v.flexiblecalendar.entity.SelectedDateItem;
 import com.p_v.flexiblecalendar.exception.HighValueException;
 import com.p_v.flexiblecalendar.view.BaseCellView;
-import com.p_v.flexiblecalendar.entity.Event;
 import com.p_v.flexiblecalendar.view.impl.DateCellViewImpl;
 import com.p_v.flexiblecalendar.view.impl.WeekdayCellViewImpl;
 import com.p_v.fliexiblecalendar.R;
@@ -36,8 +36,8 @@ import java.util.List;
  * @author p-v
  */
 public class FlexibleCalendarView extends LinearLayout implements
-        FlexibleCalendarGridAdapter.OnDateCellItemClickListener,
-        FlexibleCalendarGridAdapter.MonthEventFetcher {
+    FlexibleCalendarGridAdapter.OnDateCellItemClickListener,
+    FlexibleCalendarGridAdapter.MonthEventFetcher {
 
     /**
      * Customize Calendar using this interface
@@ -66,7 +66,8 @@ public class FlexibleCalendarView extends LinearLayout implements
 
         /**
          * Get display value for the day of week
-         * @param dayOfWeek the value of day of week where 1 is SUNDAY, 2 is MONDAY ... 7 is SATURDAY
+         *
+         * @param dayOfWeek    the value of day of week where 1 is SUNDAY, 2 is MONDAY ... 7 is SATURDAY
          * @param defaultValue the default value for the day of week
          * @return
          */
@@ -77,18 +78,19 @@ public class FlexibleCalendarView extends LinearLayout implements
      * Event Data Provider used for displaying events for a particular date
      */
     public interface EventDataProvider {
-        List<? extends Event> getEventsForTheDay(int year,int month, int day);
+        List<? extends Event> getEventsForTheDay(int year, int month, int day);
     }
 
     /**
      * Listener for month change.
      */
-    public interface OnMonthChangeListener{
+    public interface OnMonthChangeListener {
         /**
          * Called whenever there is a month change
-         * @param year the selected month's year
-         * @param month the selected month
-         * @param direction  LEFT or RIGHT
+         *
+         * @param year      the selected month's year
+         * @param month     the selected month
+         * @param direction LEFT or RIGHT
          */
         void onMonthChange(int year, int month, @Direction int direction);
     }
@@ -96,14 +98,15 @@ public class FlexibleCalendarView extends LinearLayout implements
     /**
      * Click listener for date cell
      */
-    public interface OnDateClickListener{
+    public interface OnDateClickListener {
         /**
          * Called whenever a date cell is clicked
-         * @param day selected day
+         *
+         * @param day   selected day
          * @param month selected month
-         * @param year selected year
+         * @param year  selected year
          */
-        void onDateClick(int year,int month, int day);
+        void onDateClick(int year, int month, int day);
     }
 
     /**
@@ -112,12 +115,10 @@ public class FlexibleCalendarView extends LinearLayout implements
     private class DefaultCalendarView implements CalendarView {
 
         @Override
-        public BaseCellView getCellView(int position, View convertView, ViewGroup parent,
-                                        int cellType) {
+        public BaseCellView getCellView(int position, View convertView, ViewGroup parent, int cellType) {
             BaseCellView cellView = (BaseCellView) convertView;
-            if(cellView == null){
-                LayoutInflater inflater = LayoutInflater.from(context);
-                cellView = (BaseCellView)inflater.inflate(R.layout.square_cell_layout,null);
+            if (cellView == null) {
+                cellView = (BaseCellView) LayoutInflater.from(context).inflate(R.layout.square_cell_layout, parent, false);
             }
             return cellView;
         }
@@ -125,9 +126,8 @@ public class FlexibleCalendarView extends LinearLayout implements
         @Override
         public BaseCellView getWeekdayCellView(int position, View convertView, ViewGroup parent) {
             BaseCellView cellView = (BaseCellView) convertView;
-            if(cellView == null){
-                LayoutInflater inflater = LayoutInflater.from(context);
-                cellView = (BaseCellView)inflater.inflate(R.layout.square_cell_layout,null);
+            if (cellView == null) {
+                cellView = (BaseCellView) LayoutInflater.from(context).inflate(R.layout.square_cell_layout, parent, false);
             }
             return cellView;
         }
@@ -153,9 +153,10 @@ public class FlexibleCalendarView extends LinearLayout implements
     /**
      * Direction for movement of FlexibleCalendarView left or right
      */
-    @IntDef({LEFT,RIGHT})
+    @IntDef({LEFT, RIGHT})
     @Retention(RetentionPolicy.SOURCE)
-    public @interface Direction{}
+    public @interface Direction {
+    }
 
     private Context context;
     /**
@@ -180,7 +181,7 @@ public class FlexibleCalendarView extends LinearLayout implements
     private int monthViewBackground;
     private int weekViewBackground;
     private boolean showDatesOutsideMonth;
-	private boolean decorateDatesOutsideMonth;
+    private boolean decorateDatesOutsideMonth;
     private boolean disableAutoDateSelection;
 
     /**
@@ -208,24 +209,24 @@ public class FlexibleCalendarView extends LinearLayout implements
 
     private int lastPosition;
 
-    public FlexibleCalendarView(Context context){
+    public FlexibleCalendarView(Context context) {
         super(context);
         this.context = context;
     }
 
-    public FlexibleCalendarView(Context context, AttributeSet attrs){
-        super(context,attrs);
+    public FlexibleCalendarView(Context context, AttributeSet attrs) {
+        super(context, attrs);
         this.context = context;
         init(attrs);
     }
 
-    public FlexibleCalendarView(Context context, AttributeSet attrs, int defStyleAttr){
+    public FlexibleCalendarView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.context = context;
         init(attrs);
     }
 
-    private void init(AttributeSet attrs){
+    private void init(AttributeSet attrs) {
         setAttributes(attrs);
         setOrientation(VERTICAL);
 
@@ -234,15 +235,13 @@ public class FlexibleCalendarView extends LinearLayout implements
 
         //create week view header
         weekDisplayView = new GridView(context);
-        weekDisplayView.setLayoutParams(
-                new GridView.LayoutParams(GridView.LayoutParams.MATCH_PARENT, GridView.LayoutParams.WRAP_CONTENT));
+        weekDisplayView.setLayoutParams(new GridView.LayoutParams(GridView.LayoutParams.MATCH_PARENT, GridView.LayoutParams.WRAP_CONTENT));
         weekDisplayView.setNumColumns(7);
         weekDisplayView.setHorizontalSpacing(weekdayHorizontalSpacing);
         weekDisplayView.setVerticalSpacing(weekdayVerticalSpacing);
         weekDisplayView.setColumnWidth(GridView.STRETCH_COLUMN_WIDTH);
         weekDisplayView.setBackgroundResource(weekViewBackground);
-        weekdayDisplayAdapter = new WeekdayNameDisplayAdapter(getContext(),
-                android.R.layout.simple_list_item_1,startDayOfTheWeek);
+        weekdayDisplayAdapter = new WeekdayNameDisplayAdapter(getContext(), android.R.layout.simple_list_item_1, startDayOfTheWeek);
 
         //setting default week cell view
         weekdayDisplayAdapter.setCellView(new WeekdayCellViewImpl(calendarView));
@@ -255,9 +254,9 @@ public class FlexibleCalendarView extends LinearLayout implements
         monthViewPager.setBackgroundResource(monthViewBackground);
         monthViewPager.setNumOfRows(showDatesOutsideMonth ? 6 : FlexibleCalendarHelper.getNumOfRowsForTheMonth(displayYear, displayMonth, startDayOfTheWeek));
         monthViewPagerAdapter = new MonthViewPagerAdapter(context, displayYear, displayMonth, this,
-                showDatesOutsideMonth, decorateDatesOutsideMonth, startDayOfTheWeek, disableAutoDateSelection);
+            showDatesOutsideMonth, decorateDatesOutsideMonth, startDayOfTheWeek, disableAutoDateSelection);
         monthViewPagerAdapter.setMonthEventFetcher(this);
-        monthViewPagerAdapter.setSpacing(monthDayHorizontalSpacing,monthDayVerticalSpacing);
+        monthViewPagerAdapter.setSpacing(monthDayHorizontalSpacing, monthDayVerticalSpacing);
 
         //set the default cell view
         monthViewPagerAdapter.setCellViewDrawer(new DateCellViewImpl(calendarView));
@@ -266,12 +265,11 @@ public class FlexibleCalendarView extends LinearLayout implements
         //Initializing with the offset value
         lastPosition = monthInfPagerAdapter.getRealCount() * 100;
         monthViewPager.setAdapter(monthInfPagerAdapter);
-        monthViewPager.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+        monthViewPager.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
         monthViewPager.addOnPageChangeListener(new MonthChangeListener());
 
         //initialize with the current selected item
-        selectedDateItem = new SelectedDateItem(displayYear, displayMonth,startDisplayDay);
+        selectedDateItem = new SelectedDateItem(displayYear, displayMonth, startDisplayDay);
         monthViewPagerAdapter.setSelectedItem(selectedDateItem);
 
         this.addView(monthViewPager);
@@ -281,24 +279,24 @@ public class FlexibleCalendarView extends LinearLayout implements
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.FlexibleCalendarView);
         try {
             Calendar cal = Calendar.getInstance(FlexibleCalendarHelper.getLocale(context));
-            displayMonth = a.getInteger(R.styleable.FlexibleCalendarView_startDisplayMonth,cal.get(Calendar.MONTH));
+            displayMonth = a.getInteger(R.styleable.FlexibleCalendarView_startDisplayMonth, cal.get(Calendar.MONTH));
             displayYear = a.getInteger(R.styleable.FlexibleCalendarView_startDisplayYear, cal.get(Calendar.YEAR));
             startDisplayDay = cal.get(Calendar.DAY_OF_MONTH);
 
-            weekdayHorizontalSpacing = (int)a.getDimension(R.styleable.FlexibleCalendarView_weekDayHorizontalSpacing, 0);
-            weekdayVerticalSpacing = (int)a.getDimension(R.styleable.FlexibleCalendarView_weekDayVerticalSpacing, 0);
-            monthDayHorizontalSpacing = (int)a.getDimension(R.styleable.FlexibleCalendarView_monthDayHorizontalSpacing, 0);
-            monthDayVerticalSpacing = (int)a.getDimension(R.styleable.FlexibleCalendarView_monthDayVerticalSpacing,0);
+            weekdayHorizontalSpacing = (int) a.getDimension(R.styleable.FlexibleCalendarView_weekDayHorizontalSpacing, 0);
+            weekdayVerticalSpacing = (int) a.getDimension(R.styleable.FlexibleCalendarView_weekDayVerticalSpacing, 0);
+            monthDayHorizontalSpacing = (int) a.getDimension(R.styleable.FlexibleCalendarView_monthDayHorizontalSpacing, 0);
+            monthDayVerticalSpacing = (int) a.getDimension(R.styleable.FlexibleCalendarView_monthDayVerticalSpacing, 0);
 
-            monthViewBackground = a.getResourceId(R.styleable.FlexibleCalendarView_monthViewBackground,android.R.color.transparent);
+            monthViewBackground = a.getResourceId(R.styleable.FlexibleCalendarView_monthViewBackground, android.R.color.transparent);
             weekViewBackground = a.getResourceId(R.styleable.FlexibleCalendarView_weekViewBackground, android.R.color.transparent);
 
             showDatesOutsideMonth = a.getBoolean(R.styleable.FlexibleCalendarView_showDatesOutsideMonth, false);
-			decorateDatesOutsideMonth = a.getBoolean(R.styleable.FlexibleCalendarView_decorateDatesOutsideMonth, false);
+            decorateDatesOutsideMonth = a.getBoolean(R.styleable.FlexibleCalendarView_decorateDatesOutsideMonth, false);
             disableAutoDateSelection = a.getBoolean(R.styleable.FlexibleCalendarView_disableAutoDateSelection, false);
 
             startDayOfTheWeek = a.getInt(R.styleable.FlexibleCalendarView_startDayOfTheWeek, Calendar.SUNDAY);
-            if(startDayOfTheWeek<1 || startDayOfTheWeek>7){
+            if (startDayOfTheWeek < 1 || startDayOfTheWeek > 7) {
                 // setting the start day to sunday in case of invalid input
                 startDayOfTheWeek = Calendar.SUNDAY;
             }
@@ -312,8 +310,7 @@ public class FlexibleCalendarView extends LinearLayout implements
         this.monthViewPagerAdapter.setStartDate(calendar);
     }
 
-    private class MonthChangeListener implements ViewPager.OnPageChangeListener{
-
+    private class MonthChangeListener implements ViewPager.OnPageChangeListener {
 
 
         @Override
@@ -322,24 +319,23 @@ public class FlexibleCalendarView extends LinearLayout implements
 
         @Override
         public void onPageSelected(int position) {
-            int direction = position>lastPosition? RIGHT : LEFT;
+            int direction = position > lastPosition ? RIGHT : LEFT;
 
             //refresh the previous adapter and deselect the item
-            monthViewPagerAdapter.getMonthAdapterAtPosition(lastPosition % MonthViewPagerAdapter.VIEWS_IN_PAGER).setSelectedItem(null,true,false);
-            if(disableAutoDateSelection){
+            monthViewPagerAdapter.getMonthAdapterAtPosition(lastPosition % MonthViewPagerAdapter.VIEWS_IN_PAGER).setSelectedItem(null, true, false);
+            if (disableAutoDateSelection) {
                 monthViewPagerAdapter.refreshUserSelectedItem(userSelectedItem);
             }
 
             SelectedDateItem newDateItem;
-            if(shouldOverrideComputedDate){
+            if (shouldOverrideComputedDate) {
                 //set the selectedDateItem as the newDateItem
                 newDateItem = selectedDateItem;
                 shouldOverrideComputedDate = false;
-            }else{
+            } else {
                 //compute the new SelectedDateItem based on the difference in position
                 newDateItem = computeNewSelectedDateItem(lastPosition - position);
             }
-
 
             //the month view pager adater will update here again
             monthViewPagerAdapter.refreshDateAdapters(position % MonthViewPagerAdapter.VIEWS_IN_PAGER, newDateItem, resetAdapters);
@@ -348,17 +344,17 @@ public class FlexibleCalendarView extends LinearLayout implements
             lastPosition = position;
 
             //update the currently selected date item
-            FlexibleCalendarGridAdapter adapter = monthViewPagerAdapter.getMonthAdapterAtPosition(position%MonthViewPagerAdapter.VIEWS_IN_PAGER);
+            FlexibleCalendarGridAdapter adapter = monthViewPagerAdapter.getMonthAdapterAtPosition(position % MonthViewPagerAdapter.VIEWS_IN_PAGER);
             selectedDateItem = adapter.getSelectedItem();
 
             displayYear = adapter.getYear();
             displayMonth = adapter.getMonth();
-            if(onMonthChangeListener!=null){
+            if (onMonthChangeListener != null) {
                 //fire on month change event
                 onMonthChangeListener.onMonthChange(displayYear, displayMonth, direction);
             }
 
-            if(resetAdapters){
+            if (resetAdapters) {
                 resetAdapters = false;
                 monthViewPager.post(new Runnable() {
                     @Override
@@ -369,22 +365,18 @@ public class FlexibleCalendarView extends LinearLayout implements
                     }
                 });
             }
-
         }
 
         @Override
         public void onPageScrollStateChanged(int state) {
         }
 
-        private SelectedDateItem computeNewSelectedDateItem(int difference){
-
+        private SelectedDateItem computeNewSelectedDateItem(int difference) {
             Calendar cal = Calendar.getInstance();
-            cal.set(displayYear, displayMonth,1);
+            cal.set(displayYear, displayMonth, 1);
             cal.add(Calendar.MONTH, -difference);
 
-            return new SelectedDateItem(cal.get(Calendar.YEAR),
-                    cal.get(Calendar.MONTH), 1);
-
+            return new SelectedDateItem(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), 1);
         }
     }
 
@@ -400,9 +392,7 @@ public class FlexibleCalendarView extends LinearLayout implements
         Animation a = new Animation() {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
-                getLayoutParams().height = interpolatedTime == 1
-                        ? LayoutParams.WRAP_CONTENT
-                        : (int)(targetHeight * interpolatedTime);
+                getLayoutParams().height = interpolatedTime == 1 ? LayoutParams.WRAP_CONTENT : (int) (targetHeight * interpolatedTime);
                 requestLayout();
             }
 
@@ -412,7 +402,7 @@ public class FlexibleCalendarView extends LinearLayout implements
             }
         };
 
-        a.setDuration(((int)(targetHeight / getContext().getResources().getDisplayMetrics().density)));
+        a.setDuration(((int) (targetHeight / getContext().getResources().getDisplayMetrics().density)));
         startAnimation(a);
     }
 
@@ -420,15 +410,15 @@ public class FlexibleCalendarView extends LinearLayout implements
     /**
      * Collapse the view with animation
      */
-    public void collapse(){
+    public void collapse() {
         final int initialHeight = this.getMeasuredHeight();
         Animation a = new Animation() {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
-                if(interpolatedTime == 1){
+                if (interpolatedTime == 1) {
                     setVisibility(View.GONE);
-                }else{
-                    getLayoutParams().height = initialHeight - (int)(initialHeight * interpolatedTime);
+                } else {
+                    getLayoutParams().height = initialHeight - (int) (initialHeight * interpolatedTime);
                     requestLayout();
                 }
             }
@@ -439,27 +429,27 @@ public class FlexibleCalendarView extends LinearLayout implements
             }
         };
 
-        a.setDuration(((int)(initialHeight / getContext().getResources().getDisplayMetrics().density)));
+        a.setDuration(((int) (initialHeight / getContext().getResources().getDisplayMetrics().density)));
         startAnimation(a);
     }
 
-    public void setOnMonthChangeListener(OnMonthChangeListener onMonthChangeListener){
+    public void setOnMonthChangeListener(OnMonthChangeListener onMonthChangeListener) {
         this.onMonthChangeListener = onMonthChangeListener;
     }
 
-    public void setOnDateClickListener(OnDateClickListener onDateClickListener){
+    public void setOnDateClickListener(OnDateClickListener onDateClickListener) {
         this.onDateClickListener = onDateClickListener;
     }
 
-    public void setEventDataProvider(EventDataProvider eventDataProvider){
+    public void setEventDataProvider(EventDataProvider eventDataProvider) {
         this.eventDataProvider = eventDataProvider;
     }
 
-   /* /**
-     * Set the start display year and month
-     * @param year  start year to display
-     * @param month  start month to display
-     *//*
+    /* /**
+      * Set the start display year and month
+      * @param year  start year to display
+      * @param month  start month to display
+      *//*
     public void setStartDisplay(int year,int month){
         //TODO revisit there is something wrong going here things are not selected
         this.displayYear = year;
@@ -470,19 +460,19 @@ public class FlexibleCalendarView extends LinearLayout implements
 */
     @Override
     public void onDateClick(SelectedDateItem selectedItem) {
-        if(selectedDateItem.getYear()!=selectedItem.getYear() || selectedDateItem.getMonth()!=selectedItem.getMonth()){
+        if (selectedDateItem.getYear() != selectedItem.getYear() || selectedDateItem.getMonth() != selectedItem.getMonth()) {
             shouldOverrideComputedDate = true;
             //different month
             int monthDifference = FlexibleCalendarHelper.getMonthDifference(selectedItem.getYear(), selectedItem.getMonth(),
-                    selectedDateItem.getYear(), selectedDateItem.getMonth());
+                selectedDateItem.getYear(), selectedDateItem.getMonth());
             this.selectedDateItem = selectedItem;
             //move back or forth based on the monthDifference
-            if(monthDifference > 0){
+            if (monthDifference > 0) {
                 moveToPreviousMonth();
-            }else{
+            } else {
                 moveToNextMonth();
             }
-        }else{
+        } else {
             //do nothing if same month
             this.selectedDateItem = selectedItem;
         }
@@ -491,67 +481,69 @@ public class FlexibleCalendarView extends LinearLayout implements
         redrawMonthGrid(lastPosition % MonthViewPagerAdapter.VIEWS_IN_PAGER);
 
         // set user selected date item
-        if(disableAutoDateSelection){
+        if (disableAutoDateSelection) {
             this.userSelectedItem = selectedItem.clone();
         }
 
-        if(onDateClickListener!=null) {
+        if (onDateClickListener != null) {
             onDateClickListener.onDateClick(selectedItem.getYear(), selectedItem.getMonth(), selectedItem.getDay());
         }
     }
 
-    private void redrawMonthGrid(int position){
-        if(position == -1){
+    private void redrawMonthGrid(int position) {
+        if (position == -1) {
             //redraw all
-            for(int i = 0; i<=3;i++){
-                View view = monthViewPager.findViewWithTag(MonthViewPagerAdapter.GRID_TAG_PREFIX+i);
+            for (int i = 0; i <= 3; i++) {
+                View view = monthViewPager.findViewWithTag(MonthViewPagerAdapter.GRID_TAG_PREFIX + i);
                 reAddAdapter(view);
             }
-        }else{
-            View view = monthViewPager.findViewWithTag(MonthViewPagerAdapter.GRID_TAG_PREFIX+position);
+        } else {
+            View view = monthViewPager.findViewWithTag(MonthViewPagerAdapter.GRID_TAG_PREFIX + position);
             reAddAdapter(view);
         }
     }
 
-    private void reAddAdapter(View view){
-        if(view!=null){
-            ListAdapter adapter = ((GridView)view).getAdapter();
-            ((GridView)view).setAdapter(adapter);
+    private void reAddAdapter(View view) {
+        if (view != null) {
+            ListAdapter adapter = ((GridView) view).getAdapter();
+            ((GridView) view).setAdapter(adapter);
         }
     }
 
     /**
      * @return currently selected date
      */
-    public SelectedDateItem getSelectedDateItem(){
-        if(disableAutoDateSelection){
+    public SelectedDateItem getSelectedDateItem() {
+        if (disableAutoDateSelection) {
             return userSelectedItem == null ? null : userSelectedItem.clone();
         }
         return selectedDateItem.clone();
     }
 
-    public int getCurrentMonth(){
+    public int getCurrentMonth() {
         return selectedDateItem.getMonth();
     }
 
-    public int getCurrentYear(){
+    public int getCurrentYear() {
         return selectedDateItem.getYear();
     }
 
     /**
      * Move the selection to the next day
      */
-    public void moveToPreviousDate(){
+    public void moveToPreviousDate() {
         // in case when auto selection is disabled
         // do nothing if there is nothing selected by the user
-        if(disableAutoDateSelection && userSelectedItem == null) return;
+        if (disableAutoDateSelection && userSelectedItem == null) {
+            return;
+        }
 
-        if(selectedDateItem!=null){
+        if (selectedDateItem != null) {
             Calendar cal = Calendar.getInstance();
             cal.set(selectedDateItem.getYear(), selectedDateItem.getMonth(), selectedDateItem.getDay());
             cal.add(Calendar.DATE, -1);
 
-            if(selectedDateItem.getMonth()!=cal.get(Calendar.MONTH)) {
+            if (selectedDateItem.getMonth() != cal.get(Calendar.MONTH)) {
                 //update selected date item
                 selectedDateItem.setDay(cal.get(Calendar.DAY_OF_MONTH));
                 selectedDateItem.setMonth(cal.get(Calendar.MONTH));
@@ -562,7 +554,7 @@ public class FlexibleCalendarView extends LinearLayout implements
 
                 //scroll to previous month
                 moveToPreviousMonth();
-            }else{
+            } else {
                 selectedDateItem.setDay(cal.get(Calendar.DAY_OF_MONTH));
                 selectedDateItem.setMonth(cal.get(Calendar.MONTH));
                 selectedDateItem.setYear(cal.get(Calendar.YEAR));
@@ -574,20 +566,21 @@ public class FlexibleCalendarView extends LinearLayout implements
     /**
      * Move the selection to the previous day
      */
-    public void moveToNextDate(){
+    public void moveToNextDate() {
         // in case when auto selection is disabled
         // do nothing if there is nothing selected by the user
-        if(disableAutoDateSelection && userSelectedItem == null) return;
+        if (disableAutoDateSelection && userSelectedItem == null) {
+            return;
+        }
 
-        if(selectedDateItem!=null){
-
+        if (selectedDateItem != null) {
             Calendar cal = Calendar.getInstance();
             cal.set(selectedDateItem.getYear(), selectedDateItem.getMonth(), selectedDateItem.getDay());
             cal.add(Calendar.DATE, 1);
 
-            if(selectedDateItem.getMonth()!=cal.get(Calendar.MONTH)){
+            if (selectedDateItem.getMonth() != cal.get(Calendar.MONTH)) {
                 moveToNextMonth();
-            }else{
+            } else {
                 selectedDateItem.setDay(cal.get(Calendar.DAY_OF_MONTH));
                 selectedDateItem.setMonth(cal.get(Calendar.MONTH));
                 selectedDateItem.setYear(cal.get(Calendar.YEAR));
@@ -598,16 +591,16 @@ public class FlexibleCalendarView extends LinearLayout implements
 
     @Override
     public List<? extends Event> getEventsForTheDay(int year, int month, int day) {
-        return eventDataProvider == null?
-                null : eventDataProvider.getEventsForTheDay(year, month, day);
+        return eventDataProvider == null ? null : eventDataProvider.getEventsForTheDay(year, month, day);
     }
 
     /**
      * Set the customized calendar view for the calendar for customizing cells
      * and layout
+     *
      * @param calendar
      */
-    public void setCalendarView(CalendarView calendar){
+    public void setCalendarView(CalendarView calendar) {
         this.calendarView = calendar;
         monthViewPagerAdapter.getCellViewDrawer().setCalendarView(calendarView);
         weekdayDisplayAdapter.getCellViewDrawer().setCalendarView(calendarView);
@@ -615,27 +608,30 @@ public class FlexibleCalendarView extends LinearLayout implements
 
     /**
      * Set the background resource for week view
+     *
      * @param resourceId
      */
-    public void setWeekViewBackgroundResource(@DrawableRes int resourceId){
+    public void setWeekViewBackgroundResource(@DrawableRes int resourceId) {
         this.weekViewBackground = resourceId;
         weekDisplayView.setBackgroundResource(resourceId);
     }
 
     /**
      * Set background resource for the month view
+     *
      * @param resourceId
      */
-    public void setMonthViewBackgroundResource(@DrawableRes int resourceId){
+    public void setMonthViewBackgroundResource(@DrawableRes int resourceId) {
         this.monthViewBackground = resourceId;
         monthViewPager.setBackgroundResource(resourceId);
     }
 
     /**
      * sets weekview header horizontal spacing between weekdays
+     *
      * @param spacing
      */
-    public void setWeekViewHorizontalSpacing(int spacing){
+    public void setWeekViewHorizontalSpacing(int spacing) {
         this.weekdayHorizontalSpacing = spacing;
         weekDisplayView.setHorizontalSpacing(weekdayHorizontalSpacing);
 
@@ -643,27 +639,30 @@ public class FlexibleCalendarView extends LinearLayout implements
 
     /**
      * Sets the weekview header vertical spacing between weekdays
+     *
      * @param spacing
      */
-    public void setWeekViewVerticalSpacing(int spacing){
+    public void setWeekViewVerticalSpacing(int spacing) {
         this.weekdayVerticalSpacing = spacing;
         weekDisplayView.setVerticalSpacing(weekdayVerticalSpacing);
     }
 
     /**
      * Sets the month view cells horizontal spacing
+     *
      * @param spacing
      */
-    public void setMonthViewHorizontalSpacing(int spacing){
+    public void setMonthViewHorizontalSpacing(int spacing) {
         this.monthDayHorizontalSpacing = spacing;
         monthViewPagerAdapter.setSpacing(monthDayHorizontalSpacing, monthDayVerticalSpacing);
     }
 
     /**
      * Sets the month view cells vertical spacing
+     *
      * @param spacing
      */
-    public void setMonthViewVerticalSpacing(int spacing){
+    public void setMonthViewVerticalSpacing(int spacing) {
         this.monthDayVerticalSpacing = spacing;
         monthViewPagerAdapter.setSpacing(monthDayHorizontalSpacing, monthDayVerticalSpacing);
     }
@@ -671,7 +670,7 @@ public class FlexibleCalendarView extends LinearLayout implements
     /**
      * move to next month
      */
-    public void moveToNextMonth(){
+    public void moveToNextMonth() {
         moveToPosition(1);
     }
 
@@ -679,28 +678,27 @@ public class FlexibleCalendarView extends LinearLayout implements
      * move to position with respect to current position
      * for internal use
      */
-    private void moveToPosition(int position){
+    private void moveToPosition(int position) {
         monthViewPager.setCurrentItem(lastPosition + position - monthInfPagerAdapter.getRealCount() * 100, true);
     }
 
     /**
      * move to previous month
      */
-    public void moveToPreviousMonth(){
+    public void moveToPreviousMonth() {
         moveToPosition(-1);
     }
 
     /**
      * move the position to the current month
      */
-    public void goToCurrentMonth(){
+    public void goToCurrentMonth() {
         //check has to go left side or right
-        int monthDifference = FlexibleCalendarHelper
-                .getMonthDifference(displayYear, displayMonth);
+        int monthDifference = FlexibleCalendarHelper.getMonthDifference(displayYear, displayMonth);
 
-        if(monthDifference!=0){
+        if (monthDifference != 0) {
             resetAdapters = true;
-            if(monthDifference<0){
+            if (monthDifference < 0) {
                 //set fake count to avoid freezing in InfiniteViewPager as it iterates to Integer.MAX_VALUE
                 monthInfPagerAdapter.setFakeCount(lastPosition);
                 monthInfPagerAdapter.notifyDataSetChanged();
@@ -712,10 +710,9 @@ public class FlexibleCalendarView extends LinearLayout implements
     /**
      * move the position to today's date
      */
-    public void goToCurrentDay(){
+    public void goToCurrentDay() {
         //check has to go left side or right
-        int monthDifference = FlexibleCalendarHelper
-                .getMonthDifference(displayYear, displayMonth);
+        int monthDifference = FlexibleCalendarHelper.getMonthDifference(displayYear, displayMonth);
 
         //current date
         Calendar cal = Calendar.getInstance();
@@ -724,13 +721,13 @@ public class FlexibleCalendarView extends LinearLayout implements
         selectedDateItem.setMonth(cal.get(Calendar.MONTH));
         selectedDateItem.setYear(cal.get(Calendar.YEAR));
 
-        if(disableAutoDateSelection){
+        if (disableAutoDateSelection) {
             this.userSelectedItem = selectedDateItem.clone();
         }
 
-        if(monthDifference!=0){
+        if (monthDifference != 0) {
             resetAdapters = true;
-            if(monthDifference<0){
+            if (monthDifference < 0) {
                 //set fake count to avoid freezing in InfiniteViewPager as it iterates to Integer.MAX_VALUE
                 monthInfPagerAdapter.setFakeCount(lastPosition);
                 monthInfPagerAdapter.notifyDataSetChanged();
@@ -738,9 +735,9 @@ public class FlexibleCalendarView extends LinearLayout implements
             //set true to override the computed date in onPageSelected method
             shouldOverrideComputedDate = true;
             moveToPosition(monthDifference);
-        }else{
+        } else {
             FlexibleCalendarGridAdapter currentlyVisibleAdapter = monthViewPagerAdapter
-                    .getMonthAdapterAtPosition(lastPosition % MonthViewPagerAdapter.VIEWS_IN_PAGER);
+                .getMonthAdapterAtPosition(lastPosition % MonthViewPagerAdapter.VIEWS_IN_PAGER);
             currentlyVisibleAdapter.notifyDataSetChanged();
         }
     }
@@ -751,7 +748,7 @@ public class FlexibleCalendarView extends LinearLayout implements
      *
      * @param showDatesOutsideMonth set true to show the dates outside month
      */
-    public void setShowDatesOutsideMonth(boolean showDatesOutsideMonth){
+    public void setShowDatesOutsideMonth(boolean showDatesOutsideMonth) {
         this.showDatesOutsideMonth = showDatesOutsideMonth;
         monthViewPager.setNumOfRows(showDatesOutsideMonth ? 6 : FlexibleCalendarHelper.getNumOfRowsForTheMonth(displayYear, displayMonth, startDayOfTheWeek));
         monthViewPager.invalidate();
@@ -760,37 +757,40 @@ public class FlexibleCalendarView extends LinearLayout implements
 
     /**
      * Get the show dates outside month flag
+     *
      * @return true if showDatesOutsideMonth is enable, false otherwise
      */
-    public boolean getShowDatesOutsideMonth(){
+    public boolean getShowDatesOutsideMonth() {
         return showDatesOutsideMonth;
     }
 
-	/**
-	 * Flag to decorate dates outside the month. Default value is false which will only decorate
-	 * dates within the month
-	 * @param decorateDatesOutsideMonth set true to decorate the dates outside month
-	 */
-	public void setDecorateDatesOutsideMonth( boolean decorateDatesOutsideMonth ) {
-		this.decorateDatesOutsideMonth = decorateDatesOutsideMonth;
-		monthViewPager.invalidate();
-		monthViewPagerAdapter.setDecorateDatesOutsideMonth( decorateDatesOutsideMonth );
-	}
+    /**
+     * Flag to decorate dates outside the month. Default value is false which will only decorate
+     * dates within the month
+     *
+     * @param decorateDatesOutsideMonth set true to decorate the dates outside month
+     */
+    public void setDecorateDatesOutsideMonth(boolean decorateDatesOutsideMonth) {
+        this.decorateDatesOutsideMonth = decorateDatesOutsideMonth;
+        monthViewPager.invalidate();
+        monthViewPagerAdapter.setDecorateDatesOutsideMonth(decorateDatesOutsideMonth);
+    }
 
-	/**
-	 * Get the decorate dates outside month flag
-	 * @return true if the decorateDatesOutsideMonth is enabled, false otherwise
-	 */
-	public boolean getDecorateDatesOutsideMonth() {
-		return decorateDatesOutsideMonth;
-	}
+    /**
+     * Get the decorate dates outside month flag
+     *
+     * @return true if the decorateDatesOutsideMonth is enabled, false otherwise
+     */
+    public boolean getDecorateDatesOutsideMonth() {
+        return decorateDatesOutsideMonth;
+    }
 
     /**
      * Disable auto selection of the first day of the month
      *
      * @param disableAutoDateSelection true to disable the auto selection
      */
-    public void setDisableAutoDateSelection(boolean disableAutoDateSelection){
+    public void setDisableAutoDateSelection(boolean disableAutoDateSelection) {
         this.disableAutoDateSelection = disableAutoDateSelection;
         monthViewPager.invalidate();
         monthViewPagerAdapter.setDisableAutoDateSelection(disableAutoDateSelection);
@@ -798,22 +798,23 @@ public class FlexibleCalendarView extends LinearLayout implements
 
     /**
      * Get the disable auto date selection flag
+     *
      * @return true if disableAutoDateSelection is enabled
      */
-    public boolean isDisableAutoDateSelection(){
+    public boolean isDisableAutoDateSelection() {
         return disableAutoDateSelection;
     }
 
-	/**
+    /**
      * Refresh the calendar view. Invalidate and redraw all the cells
      */
-    public void refresh(){
+    public void refresh() {
         redrawMonthGrid(-1);
     }
 
     /**
      * <p>Set the start day of week.</p>
-     *
+     * <p/>
      * SUNDAY = 1,
      * MONDAY = 2,
      * TUESDAY = 3,
@@ -824,9 +825,9 @@ public class FlexibleCalendarView extends LinearLayout implements
      *
      * @param startDayOfTheWeek Add values between 1 to 7. Defaults to 1 if entered outside boundary
      */
-    public void setStartDayOfTheWeek(int startDayOfTheWeek){
+    public void setStartDayOfTheWeek(int startDayOfTheWeek) {
         this.startDayOfTheWeek = startDayOfTheWeek;
-        if(startDayOfTheWeek<1 || startDayOfTheWeek > 7){
+        if (startDayOfTheWeek < 1 || startDayOfTheWeek > 7) {
             startDayOfTheWeek = 1;
         }
         monthViewPagerAdapter.setStartDayOfTheWeek(startDayOfTheWeek);
@@ -836,7 +837,7 @@ public class FlexibleCalendarView extends LinearLayout implements
     /**
      * @return start day of the week
      */
-    public int getStartDayOfTheWeek(){
+    public int getStartDayOfTheWeek() {
         return startDayOfTheWeek;
     }
 
@@ -846,7 +847,10 @@ public class FlexibleCalendarView extends LinearLayout implements
      * @param date
      */
     public void selectDate(Date date) {
-        if(date == null) return;
+        if (date == null) {
+            return;
+        }
+
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         selectDate(calendar);
@@ -854,28 +858,28 @@ public class FlexibleCalendarView extends LinearLayout implements
 
     /**
      * Select the date in the FlexibleCalendar
+     *
      * @param calendar
      */
     public void selectDate(Calendar calendar) {
-        if(calendar==null) return;
+        if (calendar == null) {
+            return;
+        }
 
-        selectDate(calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH));
-
+        selectDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
     }
 
     /**
      * Select the date in the FlexibleCalendar
+     *
      * @param newYear
      * @param newMonth
      * @param newDay
      */
     public void selectDate(int newYear, int newMonth, int newDay) {
-        int monthDifference = FlexibleCalendarHelper
-                .getMonthDifference(selectedDateItem.getYear(),selectedDateItem.getMonth(),
-                        newYear,newMonth);
+        int monthDifference = FlexibleCalendarHelper.getMonthDifference(selectedDateItem.getYear(), selectedDateItem.getMonth(), newYear, newMonth);
 
-        if(Math.abs(monthDifference) > HIGH_VALUE){
+        if (Math.abs(monthDifference) > HIGH_VALUE) {
             //throw exception for high values
             throw new HighValueException("Difference too high to make the change");
         }
@@ -884,14 +888,14 @@ public class FlexibleCalendarView extends LinearLayout implements
         selectedDateItem.setMonth(newMonth);
         selectedDateItem.setYear(newYear);
 
-        if(disableAutoDateSelection){
+        if (disableAutoDateSelection) {
             this.userSelectedItem = selectedDateItem.clone();
         }
 
-        if(monthDifference!=0){
+        if (monthDifference != 0) {
             //different month
             resetAdapters = true;
-            if(monthDifference<0){
+            if (monthDifference < 0) {
                 //set fake count to avoid freezing in InfiniteViewPager as it iterates to Integer.MAX_VALUE
                 monthInfPagerAdapter.setFakeCount(lastPosition);
                 monthInfPagerAdapter.notifyDataSetChanged();
@@ -900,15 +904,15 @@ public class FlexibleCalendarView extends LinearLayout implements
             shouldOverrideComputedDate = true;
             moveToPosition(monthDifference);
             // select the user selected date item
-            if(disableAutoDateSelection){
+            if (disableAutoDateSelection) {
                 monthViewPagerAdapter
-                        .getMonthAdapterAtPosition(lastPosition % MonthViewPagerAdapter.VIEWS_IN_PAGER)
-                        .setSelectedItem(selectedDateItem, true, true);
-            }
-        }else{
-            monthViewPagerAdapter
                     .getMonthAdapterAtPosition(lastPosition % MonthViewPagerAdapter.VIEWS_IN_PAGER)
                     .setSelectedItem(selectedDateItem, true, true);
+            }
+        } else {
+            monthViewPagerAdapter
+                .getMonthAdapterAtPosition(lastPosition % MonthViewPagerAdapter.VIEWS_IN_PAGER)
+                .setSelectedItem(selectedDateItem, true, true);
         }
 
     }

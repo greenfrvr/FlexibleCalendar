@@ -27,9 +27,9 @@ public class InfiniteViewPager extends ViewPager {
         setCurrentItem(0);
     }
 
-    public void setAdapter(PagerAdapter adapter, int lastPosition){
+    public void setAdapter(PagerAdapter adapter, int lastPosition) {
         super.setAdapter(adapter);
-        super.setCurrentItem(lastPosition,false);
+        super.setCurrentItem(lastPosition, false);
     }
 
     @Override

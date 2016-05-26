@@ -26,9 +26,10 @@ public abstract class BaseCellView extends TextView {
     public static final int OUTSIDE_MONTH = 5;
     public static final int DISABLED_DAY = 6;
 
-    @IntDef({TODAY,SELECTED,REGULAR,SELECTED_TODAY,OUTSIDE_MONTH,DISABLED_DAY})
+    @IntDef({TODAY, SELECTED, REGULAR, SELECTED_TODAY, OUTSIDE_MONTH, DISABLED_DAY})
     @Retention(RetentionPolicy.SOURCE)
-    public @interface CellType{}
+    public @interface CellType {
+    }
 
     public static final int STATE_TODAY = R.attr.state_date_today;
     public static final int STATE_REGULAR = R.attr.state_date_regular;
@@ -53,34 +54,37 @@ public abstract class BaseCellView extends TextView {
         stateSet = new HashSet<>(3);
     }
 
-    public void addState(int state){
+    public void addState(int state) {
         stateSet.add(state);
     }
 
-    public void clearAllStates(){
+    public void clearAllStates() {
         stateSet.clear();
     }
 
     @Override
     protected int[] onCreateDrawableState(int extraSpace) {
-        if(stateSet==null) stateSet = new HashSet<>(3);
-        if(!stateSet.isEmpty()){
+        if (stateSet == null) {
+            stateSet = new HashSet<>(3);
+        }
+
+        if (!stateSet.isEmpty()) {
             final int[] drawableState = super.onCreateDrawableState(extraSpace + stateSet.size());
             int[] states = new int[stateSet.size()];
             int i = 0;
-            for(Integer s : stateSet){
+            for (Integer s : stateSet) {
                 states[i++] = s;
             }
-            mergeDrawableStates(drawableState,states);
+            mergeDrawableStates(drawableState, states);
             return drawableState;
-        }else{
+        } else {
             return super.onCreateDrawableState(extraSpace);
         }
     }
 
     public abstract void setEvents(List<? extends Event> colorList);
 
-    public Set<Integer> getStateSet(){
+    public Set<Integer> getStateSet() {
         return stateSet;
     }
 
