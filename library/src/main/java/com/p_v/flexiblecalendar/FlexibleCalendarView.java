@@ -308,6 +308,10 @@ public class FlexibleCalendarView extends LinearLayout implements
         }
     }
 
+    public void setStartDate(Calendar calendar) {
+        this.monthViewPagerAdapter.setStartDate(calendar);
+    }
+
     private class MonthChangeListener implements ViewPager.OnPageChangeListener{
 
 

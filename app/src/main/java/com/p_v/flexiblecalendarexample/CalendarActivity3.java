@@ -58,6 +58,7 @@ public class CalendarActivity3 extends ActionBarActivity implements DatePickerDi
         initializeEvents();
 
         calendarView = (FlexibleCalendarView)findViewById(R.id.calendar_view);
+        calendarView.setStartDate(Calendar.getInstance());
         calendarView.setMonthViewHorizontalSpacing(10);
         calendarView.setMonthViewVerticalSpacing(10);
         calendarView.setOnMonthChangeListener(new FlexibleCalendarView.OnMonthChangeListener() {

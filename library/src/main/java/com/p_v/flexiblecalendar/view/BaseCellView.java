@@ -24,8 +24,9 @@ public abstract class BaseCellView extends TextView {
     public static final int REGULAR = 3;
     public static final int SELECTED_TODAY = 4;
     public static final int OUTSIDE_MONTH = 5;
+    public static final int DISABLED_DAY = 6;
 
-    @IntDef({TODAY,SELECTED,REGULAR,SELECTED_TODAY,OUTSIDE_MONTH})
+    @IntDef({TODAY,SELECTED,REGULAR,SELECTED_TODAY,OUTSIDE_MONTH,DISABLED_DAY})
     @Retention(RetentionPolicy.SOURCE)
     public @interface CellType{}
 
@@ -33,6 +34,7 @@ public abstract class BaseCellView extends TextView {
     public static final int STATE_REGULAR = R.attr.state_date_regular;
     public static final int STATE_SELECTED = R.attr.state_date_selected;
     public static final int STATE_OUTSIDE_MONTH = R.attr.state_date_outside_month;
+    public static final int STATE_DISABLED = R.attr.state_date_disabled;
 
     private Set<Integer> stateSet;
 

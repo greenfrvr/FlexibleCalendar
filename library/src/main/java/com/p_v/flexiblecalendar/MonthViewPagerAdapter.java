@@ -15,6 +15,7 @@ import com.p_v.flexiblecalendar.view.IDateCellViewDrawer;
 import com.p_v.fliexiblecalendar.R;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -75,7 +76,16 @@ public class MonthViewPagerAdapter extends PagerAdapter {
         dateAdapters.add(new FlexibleCalendarGridAdapter(context, pYear, pMonth, showDatesOutsideMonth, decorateDatesOutsideMonth, startDayOfTheWeek, disableAutoDateSelection));
     }
 
-    public void refreshDateAdapters(int position, SelectedDateItem selectedDateItem,boolean refreshAll){
+    public void setStartDate(Calendar calendar) {
+        if (calendar != null) {
+            for (FlexibleCalendarGridAdapter dateAdapter : dateAdapters) {
+                dateAdapter.setStartCalendar(calendar);
+                dateAdapter.notifyDataSetChanged();
+            }
+        }
+    }
+
+    public void refreshDateAdapters(int position, SelectedDateItem selectedDateItem, boolean refreshAll) {
         FlexibleCalendarGridAdapter currentAdapter = dateAdapters.get(position);
         if(refreshAll){
             //refresh all used when go to current month is called to refresh all the adapters

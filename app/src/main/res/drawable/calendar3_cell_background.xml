@@ -9,4 +9,6 @@
         android:drawable="@drawable/cell_red_background"/>
     <item flexible:state_date_outside_month="true"
         android:drawable="@drawable/cell_blue_background"/>
+    <item flexible:state_date_disabled="true"
+          android:drawable="@drawable/cell_purple_disabled_background"/>
 </selector>

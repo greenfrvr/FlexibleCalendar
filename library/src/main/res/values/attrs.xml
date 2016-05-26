@@ -36,5 +36,6 @@
         <attr name="state_date_today" format="boolean"/>
         <attr name="state_date_selected" format="boolean"/>
         <attr name="state_date_outside_month" format="boolean"/>
+        <attr name="state_date_disabled" format="boolean"/>
     </declare-styleable>
 </resources>

@@ -7,9 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
+import com.p_v.flexiblecalendar.entity.Event;
 import com.p_v.flexiblecalendar.entity.SelectedDateItem;
 import com.p_v.flexiblecalendar.view.BaseCellView;
-import com.p_v.flexiblecalendar.entity.Event;
 import com.p_v.flexiblecalendar.view.IDateCellViewDrawer;
 import com.p_v.fliexiblecalendar.R;
 
@@ -26,6 +26,7 @@ class FlexibleCalendarGridAdapter extends BaseAdapter {
     private Context context;
     private MonthDisplayHelper monthDisplayHelper;
     private Calendar calendar;
+    private Calendar startCalendar;
     private OnDateCellItemClickListener onDateCellItemClickListener;
     private SelectedDateItem selectedItem;
     private SelectedDateItem userSelectedDateItem;
@@ -53,6 +54,10 @@ class FlexibleCalendarGridAdapter extends BaseAdapter {
         this.month = month;
         this.monthDisplayHelper = new MonthDisplayHelper(year,month,startDayOfTheWeek);
         this.calendar = FlexibleCalendarHelper.getLocalizedCalendar(context);
+    }
+
+    public void setStartCalendar(Calendar calendar) {
+        this.startCalendar = calendar;
     }
 
     @Override
@@ -122,6 +127,12 @@ class FlexibleCalendarGridAdapter extends BaseAdapter {
             }
         }
 
+        if (startCalendar != null) {
+            if (isBeforeStartDate(row, col)) {
+                cellType = BaseCellView.DISABLED_DAY;
+            }
+        }
+
         BaseCellView cellView = cellViewDrawer.getCellView(position, convertView, parent, cellType);
         if(cellView==null){
             cellView = (BaseCellView) convertView;
@@ -138,7 +149,7 @@ class FlexibleCalendarGridAdapter extends BaseAdapter {
         cellView.clearAllStates();
         if(cellType != BaseCellView.OUTSIDE_MONTH) {
             cellView.setText(String.valueOf(day));
-            cellView.setOnClickListener(new DateClickListener(day, month, year));
+            cellView.setOnClickListener(cellType == BaseCellView.DISABLED_DAY ? null : new DateClickListener(day, month, year));
             // add events
             if(monthEventFetcher!=null){
                 cellView.setEvents(monthEventFetcher.getEventsForTheDay(year, month, day));
@@ -153,6 +164,9 @@ class FlexibleCalendarGridAdapter extends BaseAdapter {
                     break;
                 case BaseCellView.SELECTED:
                     cellView.addState(BaseCellView.STATE_SELECTED);
+                    break;
+                case BaseCellView.DISABLED_DAY:
+                    cellView.addState(BaseCellView.STATE_DISABLED);
                     break;
                 default:
                     cellView.addState(BaseCellView.STATE_REGULAR);
@@ -282,4 +296,9 @@ class FlexibleCalendarGridAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    private boolean isBeforeStartDate(int row, int col) {
+        return startCalendar.get(Calendar.YEAR) < monthDisplayHelper.getYear() ||
+            (startCalendar.get(Calendar.YEAR) == monthDisplayHelper.getYear() && startCalendar.get(Calendar.MONTH) > monthDisplayHelper.getMonth()) ||
+            (startCalendar.get(Calendar.YEAR) == monthDisplayHelper.getYear() && startCalendar.get(Calendar.MONTH) == monthDisplayHelper.getMonth() && startCalendar.get(Calendar.DAY_OF_MONTH) > monthDisplayHelper.getDayAt(row, col));
+    }
 }
